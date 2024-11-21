@@ -10,22 +10,9 @@
 		F95C4D432CED3C6900A4D9B8 /* Lab5_MobileApps.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lab5_MobileApps.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F95C4D552CED3C6900A4D9B8 /* Exceptions for "Lab5_MobileApps" folder in "Lab5_MobileApps" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = F95C4D422CED3C6900A4D9B8 /* Lab5_MobileApps */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F95C4D452CED3C6900A4D9B8 /* Lab5_MobileApps */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F95C4D552CED3C6900A4D9B8 /* Exceptions for "Lab5_MobileApps" folder in "Lab5_MobileApps" target */,
-			);
 			path = Lab5_MobileApps;
 			sourceTree = "<group>";
 		};
