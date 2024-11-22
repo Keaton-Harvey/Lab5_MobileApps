@@ -12,6 +12,271 @@
 
 
 
+
+
+import UIKit
+
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ClientDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
+
+    // MARK: - Outlets
+
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var modeSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var captureButton: UIButton!
+    @IBOutlet weak var digitPickerView: UIPickerView!
+    @IBOutlet weak var uploadButton: UIButton!
+    @IBOutlet weak var predictionLabel: UILabel!
+    @IBOutlet weak var dsidLabel: UILabel!
+    @IBOutlet weak var serverIPTextField: UITextField!
+
+    // MARK: - Properties
+
+    var capturedImage: UIImage?
+    var currentMode: String = "Training" // or "Prediction"
+
+    // Client for server communication
+    let client = MlaasModel()
+
+    // Picker view data
+    let digitOptions = Array(0...9)
+    var selectedDigit: Int = 0 // Default to 0
+
+    // MARK: - View Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Initial UI setup
+        updateUIForMode()
+
+        // Set up client delegate
+        client.delegate = self
+        client.updateDsid(1) // Set default DSID
+
+        // Set picker view data source and delegate
+        digitPickerView.dataSource = self
+        digitPickerView.delegate = self
+
+        // Set initial selected digit
+        digitPickerView.selectRow(0, inComponent: 0, animated: false)
+        selectedDigit = digitOptions[0]
+
+        // Dismiss keyboard when tapping outside
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    // MARK: - UI Updates
+
+    func updateUIForMode() {
+        if currentMode == "Training" {
+            digitPickerView.isHidden = false
+            uploadButton.isHidden = false
+            predictionLabel.isHidden = true
+        } else {
+            digitPickerView.isHidden = true
+            uploadButton.isHidden = true
+            predictionLabel.isHidden = false
+            predictionLabel.text = "Prediction will appear here."
+        }
+    }
+
+    // MARK: - Actions
+
+    @IBAction func modeChanged(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            currentMode = "Training"
+        } else {
+            currentMode = "Prediction"
+        }
+        updateUIForMode()
+    }
+
+    @IBAction func captureImageTapped(_ sender: UIButton) {
+        openCamera()
+    }
+
+    @IBAction func uploadDataTapped(_ sender: UIButton) {
+        uploadLabeledData()
+    }
+
+    @IBAction func setIPButtonTapped(_ sender: UIButton) {
+        serverIPTextField.resignFirstResponder()
+        if let ip = serverIPTextField.text, !ip.isEmpty {
+            if client.setServerIp(ip: ip) {
+                print("Server IP set to \(ip)")
+            } else {
+                print("Invalid IP address format.")
+                showAlert(title: "Invalid IP", message: "Please enter a valid IP address.")
+            }
+        }
+    }
+
+    @IBAction func getDataSetIdTapped(_ sender: UIButton) {
+        client.getNewDsid()
+    }
+
+    @IBAction func trainModelTapped(_ sender: UIButton) {
+        client.trainModel()
+    }
+
+    // MARK: - Image Capturing
+
+    func openCamera() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .camera
+            imagePicker.cameraDevice = .rear
+            imagePicker.allowsEditing = false
+            present(imagePicker, animated: true, completion: nil)
+        } else {
+            // Show alert if camera is not available
+            showAlert(title: "Error", message: "Camera not available.")
+        }
+    }
+
+    // MARK: - UIImagePickerControllerDelegate
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let image = info[.originalImage] as? UIImage {
+            capturedImage = image
+            imageView.image = capturedImage
+        }
+        picker.dismiss(animated: true) {
+            if self.currentMode == "Prediction" {
+                self.predictDigit()
+            }
+        }
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+
+    // MARK: - Data Upload and Prediction
+
+    func uploadLabeledData() {
+        guard let image = capturedImage else {
+            showAlert(title: "Error", message: "No image captured.")
+            return
+        }
+
+        // Use the selected digit from the picker view
+        let label = selectedDigit
+
+        // Preprocess image and convert to base64
+        guard let imageBase64 = preprocessImage(image) else { return }
+
+        // Send data to server
+        client.sendData(imageBase64, withLabel: label)
+    }
+
+    func predictDigit() {
+        guard let image = capturedImage else {
+            showAlert(title: "Error", message: "No image captured.")
+            return
+        }
+
+        // Preprocess image and convert to base64
+        guard let imageBase64 = preprocessImage(image) else { return }
+
+        // Send image to server for prediction
+        client.sendData(imageBase64)
+    }
+
+    // MARK: - Image Preprocessing
+
+    func preprocessImage(_ image: UIImage) -> String? {
+        // Convert to grayscale and resize to 28x28 pixels
+        guard let ciImage = CIImage(image: image)?.applyingFilter("CIPhotoEffectMono"),
+              let cgImage = convertCIImageToCGImage(inputImage: ciImage)
+        else { return nil }
+
+        let uiImage = UIImage(cgImage: cgImage)
+        let size = CGSize(width: 28, height: 28)
+        UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+        uiImage.draw(in: CGRect(origin: .zero, size: size))
+        guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext(),
+              let imageData = resizedImage.pngData()
+        else { return nil }
+        UIGraphicsEndImageContext()
+
+        // Convert image data to base64
+        let imageBase64 = imageData.base64EncodedString()
+        return imageBase64
+    }
+
+    func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
+        let context = CIContext(options: nil)
+        return context.createCGImage(inputImage, from: inputImage.extent)
+    }
+
+    // MARK: - Helper Methods
+
+    func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(alertAction)
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    // MARK: - ClientDelegate Methods
+
+    func updateDsid(_ newDsid: Int) {
+        DispatchQueue.main.async {
+            self.dsidLabel.text = "Current DSID: \(newDsid)"
+            self.client.updateDsid(newDsid)
+        }
+    }
+
+    func receivedPrediction(_ prediction: [String: Any]) {
+        if let predictedDigit = prediction["prediction"] as? Int {
+            DispatchQueue.main.async {
+                self.predictionLabel.text = "Predicted Digit: \(predictedDigit)"
+            }
+        } else if let detail = prediction["detail"] as? String {
+            showAlert(title: "Prediction Error", message: detail)
+        } else {
+            showAlert(title: "Prediction Error", message: "Unknown error occurred.")
+        }
+    }
+
+    // MARK: - UIPickerViewDataSource
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return digitOptions.count
+    }
+
+    // MARK: - UIPickerViewDelegate
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return String(digitOptions[row])
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedDigit = digitOptions[row]
+    }
+}
+
+
+
+
+
+
+
+/*
+
 import UIKit
 import CoreMotion
 
@@ -336,3 +601,4 @@ extension ViewController {
     
 }
 
+*/
