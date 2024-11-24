@@ -29,6 +29,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var dsidLabel: UILabel!
     @IBOutlet weak var serverIPTextField: UITextField!
 
+    @IBOutlet weak var processedImage: UIImageView!
     // MARK: - Properties
 
     var capturedImage: UIImage?
@@ -163,7 +164,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
 
         // Use the selected digit from the picker view
-        let label = selectedDigit
+        let label = String(selectedDigit)
 
         // Preprocess image and convert to base64
         guard let imageBase64 = preprocessImage(image) else { return }
@@ -187,25 +188,75 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     // MARK: - Image Preprocessing
 
-    func preprocessImage(_ image: UIImage) -> String? {
-        // Convert to grayscale and resize to 28x28 pixels
-        guard let ciImage = CIImage(image: image)?.applyingFilter("CIPhotoEffectMono"),
-              let cgImage = convertCIImageToCGImage(inputImage: ciImage)
-        else { return nil }
-
-        let uiImage = UIImage(cgImage: cgImage)
+    func preprocessImage(_ image: UIImage) -> [Double]? {
+        // Resize the image to 28x28 pixels
         let size = CGSize(width: 28, height: 28)
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
-        uiImage.draw(in: CGRect(origin: .zero, size: size))
-        guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext(),
-              let imageData = resizedImage.pngData()
-        else { return nil }
+        image.draw(in: CGRect(origin: .zero, size: size))
+        guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
         UIGraphicsEndImageContext()
 
-        // Convert image data to base64
-        let imageBase64 = imageData.base64EncodedString()
-        return imageBase64
+        // Convert resized image to grayscale with 8 bits per pixel
+        guard let grayCGImage = convertToGrayscale(image: resizedImage) else { return nil }
+
+        // Now extract pixel data from the grayscale image
+        guard let dataProvider = grayCGImage.dataProvider,
+              let pixelData = dataProvider.data else { return nil }
+
+        let data = CFDataGetBytePtr(pixelData)!
+        let bytesPerRow = grayCGImage.bytesPerRow
+        let bitsPerPixel = grayCGImage.bitsPerPixel
+        let bitsPerComponent = grayCGImage.bitsPerComponent
+
+        print("bitsPerComponent: \(bitsPerComponent), bitsPerPixel: \(bitsPerPixel), bytesPerRow: \(bytesPerRow)")
+
+        // Ensure the image is in the expected format
+        guard bitsPerComponent == 8, bitsPerPixel == 8 else {
+            print("Unexpected image format. Expected 8 bits per component and 8 bits per pixel.")
+            return nil
+        }
+
+        // Now we can iterate over each pixel
+        var pixelArray = [Double]()
+        let height = grayCGImage.height
+        let width = grayCGImage.width
+
+        for y in 0..<height {
+            for x in 0..<width {
+                let byteIndex = y * bytesPerRow + x
+                let gray = data[byteIndex]
+                let pixelValue = Double(gray) / 255.0  // Normalize to [0.0, 1.0]
+                pixelArray.append(pixelValue)
+            }
+        }
+
+        return pixelArray
     }
+    
+    func convertToGrayscale(image: UIImage) -> CGImage? {
+        guard let cgImage = image.cgImage else { return nil }
+
+        let width = cgImage.width
+        let height = cgImage.height
+
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+        let context = CGContext(data: nil,
+                                width: width,
+                                height: height,
+                                bitsPerComponent: 8,
+                                bytesPerRow: width,
+                                space: colorSpace,
+                                bitmapInfo: CGImageAlphaInfo.none.rawValue)
+
+        guard let ctx = context else { return nil }
+
+        ctx.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        return ctx.makeImage()
+    }
+
+
+
 
     func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
         let context = CIContext(options: nil)
@@ -237,12 +288,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     func receivedPrediction(_ prediction: [String: Any]) {
-        if let predictedDigit = prediction["prediction"] as? Int {
+        if let predictedDigit = prediction["prediction"] as? String {
+            print(predictedDigit)
             DispatchQueue.main.async {
                 self.predictionLabel.text = "Predicted Digit: \(predictedDigit)"
             }
-        } else if let detail = prediction["detail"] as? String {
-            showAlert(title: "Prediction Error", message: detail)
         } else {
             showAlert(title: "Prediction Error", message: "Unknown error occurred.")
         }

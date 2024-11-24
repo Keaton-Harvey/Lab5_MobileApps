@@ -27,7 +27,7 @@ class MlaasModel: NSObject, URLSessionDelegate {
     // MARK: - Properties
 
     private let operationQueue = OperationQueue()
-    var server_ip = "http://0.0.0.0:8000/docs" // Default IP, change if necessary
+    var server_ip = "192.168.1.79" // Default IP, change if necessary
     var delegate: ClientDelegate?
     private var dsid: Int = 1
 
@@ -69,65 +69,110 @@ class MlaasModel: NSObject, URLSessionDelegate {
 
     // MARK: - Data Transmission
 
-    func sendData(_ imageBase64: String, withLabel label: Int) {
-        let baseURL = "http://\(server_ip):8000/upload_data/"
-        guard let postUrl = URL(string: baseURL) else { return }
-
-        // Create a custom HTTP POST request
-        var request = URLRequest(url: postUrl)
-
-        // Request body
-        let requestBody: [String: Any] = [
-            "image_data": imageBase64,
-            "label": label,
-            "dsid": dsid
-        ]
-
-        // Configure request
+    func sendData(_ array:[Double], withLabel label:String){
+        let baseURL = "http://\(server_ip):8000/labeled_data/"
+        let postUrl = URL(string: "\(baseURL)")
+        
+        // create a custom HTTP POST request
+        var request = URLRequest(url: postUrl!)
+        
+        // utility method to use from below
+        let requestBody:Data = try! JSONSerialization.data(withJSONObject: ["feature":array,
+            "label":"\(label)",
+            "dsid":self.dsid])
+        
+        // The Type of the request is given here
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
-
-        let postTask: URLSessionDataTask = session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error uploading data: \(error.localizedDescription)")
-            } else {
-                print("Data uploaded successfully.")
+        request.httpBody = requestBody
+        
+        let postTask : URLSessionDataTask = self.session.dataTask(with: request,
+                        completionHandler:{(data, response, error) in
+            //TODO: notify delegate?
+            if(error != nil){
+                if let res = response{
+                    print("Response:\n",res)
+                }
             }
-        }
-        postTask.resume()
+            else{
+                let jsonDictionary = self.convertDataToDictionary(with: data)
+                
+                print(jsonDictionary["feature"]!)
+                print(jsonDictionary["label"]!)
+            }
+        })
+        postTask.resume() // start the task
     }
-
-    func sendData(_ imageBase64: String) {
-        let baseURL = "http://\(server_ip):8000/predict/"
-        guard let postUrl = URL(string: baseURL) else { return }
-
-        // Create a custom HTTP POST request
-        var request = URLRequest(url: postUrl)
-
-        // Request body
-        let requestBody: [String: Any] = [
-            "image_data": imageBase64,
-            "dsid": dsid
-        ]
-
-        // Configure request
+    
+    // post data without a label
+    func sendData(_ array:[Double]){
+        let baseURL = "http://\(server_ip):8000/predict_sklearn/"
+        let postUrl = URL(string: "\(baseURL)")
+        
+        // create a custom HTTP POST request
+        var request = URLRequest(url: postUrl!)
+        
+        // utility method to use from below
+        let requestBody:Data = try! JSONSerialization.data(withJSONObject: ["feature":array,
+            "dsid":self.dsid])
+        
+        // The Type of the request is given here
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
-
-        let postTask: URLSessionDataTask = session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error predicting digit: \(error.localizedDescription)")
-            } else if let data = data {
+        request.httpBody = requestBody
+        
+        let postTask : URLSessionDataTask = self.session.dataTask(with: request,
+                        completionHandler:{(data, response, error) in
+            
+            if(error != nil){
+                print("Error from server")
+                if let res = response{
+                    print("Response:\n",res)
+                }
+            }
+            else{
+                
                 if let delegate = self.delegate {
                     let jsonDictionary = self.convertDataToDictionary(with: data)
                     delegate.receivedPrediction(jsonDictionary)
                 }
             }
-        }
-        postTask.resume()
+        })
+        
+        postTask.resume() // start the task
     }
+    
+
+//    func sendData(_ imageBase64: String) {
+//        let baseURL = "http://\(server_ip):8000/predict/"
+//        guard let postUrl = URL(string: baseURL) else { return }
+//
+//        // Create a custom HTTP POST request
+//        var request = URLRequest(url: postUrl)
+//
+//        // Request body
+//        let requestBody: [String: Any] = [
+//            "image_data": imageBase64,
+//            "dsid": dsid
+//        ]
+//
+//        // Configure request
+//        request.httpMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
+//
+//        let postTask: URLSessionDataTask = session.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                print("Error predicting digit: \(error.localizedDescription)")
+//            } else if let data = data {
+//                if let delegate = self.delegate {
+//                    let jsonDictionary = self.convertDataToDictionary(with: data)
+//                    delegate.receivedPrediction(jsonDictionary)
+//                }
+//            }
+//        }
+//        postTask.resume()
+//    }
 
     func getNewDsid() {
         let baseURL = "http://\(server_ip):8000/get_new_dsid/"
@@ -152,7 +197,7 @@ class MlaasModel: NSObject, URLSessionDelegate {
     }
 
     func trainModel() {
-        let baseURL = "http://\(server_ip):8000/train_model/\(dsid)"
+        let baseURL = "http://\(server_ip):8000/train_model_sklearn/\(dsid)"
         guard let getUrl = URL(string: baseURL) else { return }
 
         var request = URLRequest(url: getUrl)

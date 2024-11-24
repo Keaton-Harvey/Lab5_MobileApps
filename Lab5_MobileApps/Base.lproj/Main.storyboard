@@ -100,7 +100,7 @@
                                 </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ttd-YU-moF">
-                                <rect key="frame" x="16" y="558" width="151" height="35"/>
+                                <rect key="frame" x="16" y="516" width="151" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="New Dsid"/>
@@ -109,7 +109,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZg-dK-JVN">
-                                <rect key="frame" x="207" y="558" width="151" height="35"/>
+                                <rect key="frame" x="207" y="516" width="151" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Train Model"/>
@@ -117,6 +117,10 @@
                                     <action selector="trainModelTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="NKc-MV-Fh6"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Wh-hS-iNZ">
+                                <rect key="frame" x="88" y="581" width="167" height="208"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -128,6 +132,7 @@
                         <outlet property="imageView" destination="0ne-5W-YVY" id="7yy-tk-vNb"/>
                         <outlet property="modeSegmentedControl" destination="Gqb-K8-Xxd" id="uJb-zd-xaA"/>
                         <outlet property="predictionLabel" destination="lxT-e8-BHE" id="1xV-3Q-Ork"/>
+                        <outlet property="processedImage" destination="0Wh-hS-iNZ" id="u8u-zY-HIq"/>
                         <outlet property="serverIPTextField" destination="mzU-7F-g0E" id="at4-1w-QX0"/>
                         <outlet property="uploadButton" destination="zZM-PS-HMk" id="ROm-RS-WOK"/>
                     </connections>
