@@ -16,12 +16,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="wvo-cD-7D6" kind="relationship" relationship="rootViewController" id="I7w-j0-HVa"/>
+                        <segue destination="jN5-EH-gbg" kind="relationship" relationship="rootViewController" id="4bq-Tv-jDJ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gq7-Br-Uz2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-554" y="264"/>
+            <point key="canvasLocation" x="-473" y="198"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="Rqj-IF-egJ">
@@ -35,12 +35,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0ne-5W-YVY">
-                                <rect key="frame" x="16" y="106" width="151" height="215"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HKY-4x-5vD">
-                                <rect key="frame" x="16" y="385" width="151" height="35"/>
+                                <rect key="frame" x="16" y="420" width="151" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Take Picture"/>
@@ -49,7 +45,7 @@
                                 </connections>
                             </button>
                             <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Hu-c8-446">
-                                <rect key="frame" x="189" y="143" width="187" height="110"/>
+                                <rect key="frame" x="189" y="218" width="187" height="110"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Prediction result: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lxT-e8-BHE">
@@ -60,14 +56,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label your digit here:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wwr-wv-1iE">
-                                <rect key="frame" x="189" y="114" width="187" height="21"/>
+                                <rect key="frame" x="108" y="553" width="187" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zZM-PS-HMk">
-                                <rect key="frame" x="16" y="329" width="151" height="35"/>
+                                <rect key="frame" x="214" y="482" width="151" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Upload Image"/>
@@ -75,12 +71,6 @@
                                     <action selector="uploadDataTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="VPG-RI-chW"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Server IP:" borderStyle="roundedRect" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="mzU-7F-g0E">
-                                <rect key="frame" x="16" y="450" width="370" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DSID Label:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PEb-NQ-DvV">
                                 <rect key="frame" x="189" y="392" width="201" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -88,8 +78,30 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ttd-YU-moF">
+                                <rect key="frame" x="20" y="732" width="151" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="New Dsid"/>
+                                <connections>
+                                    <action selector="getDataSetIdTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="qgP-hM-1Ro"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZg-dK-JVN">
+                                <rect key="frame" x="225" y="733" width="151" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Train Model"/>
+                                <connections>
+                                    <action selector="trainModelTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="NKc-MV-Fh6"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0ne-5W-YVY">
+                                <rect key="frame" x="16" y="182" width="151" height="215"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Gqb-K8-Xxd">
-                                <rect key="frame" x="200" y="274" width="165" height="32"/>
+                                <rect key="frame" x="20" y="484" width="165" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="Training"/>
@@ -99,28 +111,21 @@
                                     <action selector="modeChanged:" destination="wvo-cD-7D6" eventType="valueChanged" id="jPB-Ht-g0w"/>
                                 </connections>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ttd-YU-moF">
-                                <rect key="frame" x="16" y="516" width="151" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AG7-cm-vH9">
+                                <rect key="frame" x="20" y="649" width="370" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="New Dsid"/>
+                                <buttonConfiguration key="configuration" style="gray" title="Set IP"/>
                                 <connections>
-                                    <action selector="getDataSetIdTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="qgP-hM-1Ro"/>
+                                    <action selector="setIPButton:" destination="wvo-cD-7D6" eventType="touchUpInside" id="4Lz-ki-MnK"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YZg-dK-JVN">
-                                <rect key="frame" x="207" y="516" width="151" height="35"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Server IP:" borderStyle="roundedRect" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="mzU-7F-g0E">
+                                <rect key="frame" x="20" y="607" width="370" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Train Model"/>
-                                <connections>
-                                    <action selector="trainModelTapped:" destination="wvo-cD-7D6" eventType="touchUpInside" id="NKc-MV-Fh6"/>
-                                </connections>
-                            </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Wh-hS-iNZ">
-                                <rect key="frame" x="88" y="581" width="167" height="208"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -132,16 +137,85 @@
                         <outlet property="imageView" destination="0ne-5W-YVY" id="7yy-tk-vNb"/>
                         <outlet property="modeSegmentedControl" destination="Gqb-K8-Xxd" id="uJb-zd-xaA"/>
                         <outlet property="predictionLabel" destination="lxT-e8-BHE" id="1xV-3Q-Ork"/>
-                        <outlet property="processedImage" destination="0Wh-hS-iNZ" id="u8u-zY-HIq"/>
                         <outlet property="serverIPTextField" destination="mzU-7F-g0E" id="at4-1w-QX0"/>
                         <outlet property="uploadButton" destination="zZM-PS-HMk" id="ROm-RS-WOK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uPS-71-fzK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="341.79104477611941" y="263.61556064073227"/>
+            <point key="canvasLocation" x="353.73134328358208" y="909.61098398169327"/>
+        </scene>
+        <!--Image View Controller-->
+        <scene sceneID="cAC-Fj-MHM">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E6E-zH-opk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewController id="dxJ-A2-7dg" customClass="ImageViewController" customModule="Lab5_MobileApps" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="41Q-9x-ItL"/>
+                        <viewControllerLayoutGuide type="bottom" id="VuF-Qg-oMO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Tq8-eN-fD3">
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="NRZ-9Q-CMH"/>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="-431" y="910"/>
+        </scene>
+        <!--View Controller Model Selection-->
+        <scene sceneID="ddH-0o-F1s">
+            <objects>
+                <viewController id="jN5-EH-gbg" customClass="ViewControllerModelSelection" customModule="Lab5_MobileApps" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="wWZ-0G-hkS"/>
+                        <viewControllerLayoutGuide type="bottom" id="hMp-T5-Qyb"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WZl-BM-9mV">
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qhY-q8-jYn">
+                                <rect key="frame" x="78" y="445" width="247" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Neural Network"/>
+                                <connections>
+                                    <action selector="neuralNetwork:" destination="jN5-EH-gbg" eventType="touchUpInside" id="1vw-5a-Ydm"/>
+                                    <segue destination="wvo-cD-7D6" kind="push" id="z0C-bq-UHE"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dbC-e9-Qnp">
+                                <rect key="frame" x="78" y="530" width="247" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="K Nearest Neighbor"/>
+                                <connections>
+                                    <action selector="kNearestNeighbor:" destination="jN5-EH-gbg" eventType="touchUpInside" id="BYi-nH-SrZ"/>
+                                    <segue destination="wvo-cD-7D6" kind="push" id="jmW-xc-2vf"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Choose a model below" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="myW-Ok-EAj">
+                                <rect key="frame" x="115" y="367" width="173" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="L7E-Ya-srv"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ezp-xW-7Kh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="354" y="198"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="z0C-bq-UHE"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

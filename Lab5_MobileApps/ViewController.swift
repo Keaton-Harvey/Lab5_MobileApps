@@ -29,7 +29,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var dsidLabel: UILabel!
     @IBOutlet weak var serverIPTextField: UITextField!
 
-    @IBOutlet weak var processedImage: UIImageView!
     // MARK: - Properties
 
     var capturedImage: UIImage?
@@ -100,18 +99,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func uploadDataTapped(_ sender: UIButton) {
         uploadLabeledData()
     }
-
-    @IBAction func setIPButtonTapped(_ sender: UIButton) {
-        serverIPTextField.resignFirstResponder()
-        if let ip = serverIPTextField.text, !ip.isEmpty {
-            if client.setServerIp(ip: ip) {
-                print("Server IP set to \(ip)")
-            } else {
-                print("Invalid IP address format.")
-                showAlert(title: "Invalid IP", message: "Please enter a valid IP address.")
-            }
+    
+    @IBAction func setIPButton(_ sender: Any) {
+        self.serverIPTextField.resignFirstResponder()
+        let newIp = self.serverIPTextField.text ?? ""
+        if newIp.isEmpty {
+            return
         }
+        if self.client.setServerIp(ip: newIp) {
+               print("Server IP set successfully to \(newIp)")
+           } else {
+               print("Invalid IP address format.")
+           }
+        
     }
+
 
     @IBAction func getDataSetIdTapped(_ sender: UIButton) {
         client.getNewDsid()

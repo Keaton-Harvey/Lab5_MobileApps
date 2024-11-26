@@ -66,7 +66,7 @@ class MlaasModel: NSObject, URLSessionDelegate {
             return false
         }
     }
-
+    
     // MARK: - Data Transmission
 
     func sendData(_ array:[Double], withLabel label:String){
@@ -106,7 +106,7 @@ class MlaasModel: NSObject, URLSessionDelegate {
     
     // post data without a label
     func sendData(_ array:[Double]){
-        let baseURL = "http://\(server_ip):8000/predict_sklearn/"
+        let baseURL = "http://\(server_ip):8000/predict/"
         let postUrl = URL(string: "\(baseURL)")
         
         // create a custom HTTP POST request
@@ -141,6 +141,66 @@ class MlaasModel: NSObject, URLSessionDelegate {
         
         postTask.resume() // start the task
     }
+    
+    func setModelOnServer(modelType: String, dsid: Int) {
+        // Prepare the URL
+        guard let url = URL(string: "http://\(server_ip):8000/set_model/") else {
+            print("Invalid URL")
+            return
+        }
+
+        // Prepare the request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Prepare the JSON payload
+        let json: [String: Any] = [
+            "model_type": modelType,
+            "dsid": dsid
+        ]
+
+        // Convert JSON to Data
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: json, options: []) else {
+            print("Error converting JSON to Data")
+            return
+        }
+
+        // Set the request body
+        request.httpBody = jsonData
+
+        // Create the data task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            // Handle errors
+            if let error = error {
+                print("Error sending POST request: \(error)")
+                return
+            }
+
+            // Check response status
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 200 {
+                    print("Model set successfully to \(modelType)")
+                } else {
+                    print("Server returned status code \(httpResponse.statusCode)")
+                }
+            }
+
+            // Optionally handle response data
+            if let data = data {
+                if let responseJSON = try? JSONSerialization.jsonObject(with: data, options: []) {
+                    print("Response JSON: \(responseJSON)")
+                } else {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("Response String: \(responseString ?? "")")
+                }
+            }
+        }
+
+        // Start the data task
+        task.resume()
+    }
+
     
 
 //    func sendData(_ imageBase64: String) {
@@ -197,7 +257,7 @@ class MlaasModel: NSObject, URLSessionDelegate {
     }
 
     func trainModel() {
-        let baseURL = "http://\(server_ip):8000/train_model_sklearn/\(dsid)"
+        let baseURL = "http://\(server_ip):8000/train_model/\(dsid)"
         guard let getUrl = URL(string: baseURL) else { return }
 
         var request = URLRequest(url: getUrl)
