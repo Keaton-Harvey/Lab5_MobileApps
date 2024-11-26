@@ -8,6 +8,8 @@
 import UIKit
 
 class ViewController: UIViewController, ClientDelegate {
+   
+    
 
     // MARK: - Outlets
 
@@ -26,7 +28,6 @@ class ViewController: UIViewController, ClientDelegate {
 
         // Set up client delegate
         client.delegate = self
-
         // Load DSID from UserDefaults or set default
         if let savedDsid = UserDefaults.standard.value(forKey: "dsid") as? Int {
             client.updateDsid(savedDsid)
@@ -39,8 +40,10 @@ class ViewController: UIViewController, ClientDelegate {
         // Dismiss keyboard when tapping outside
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
+        
+        
     }
-
+    
     // MARK: - Actions
 
     @IBAction func setIPButton(_ sender: Any) {
@@ -60,6 +63,7 @@ class ViewController: UIViewController, ClientDelegate {
 
     @IBAction func getDataSetIdTapped(_ sender: UIButton) {
         client.getNewDsid()
+        dsidLabel.text = "Current DSID: \(client.getDsid())"
     }
 
     @IBAction func trainModelTapped(_ sender: UIButton) {
@@ -74,6 +78,24 @@ class ViewController: UIViewController, ClientDelegate {
 
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    func receivedDsids(_ dsids: [Int]) {
+        //does nothing
+    }
+    
+    func dsidDeletionCompleted(success: Bool, dsid: Int) {
+        //does nothing
+    }
+    
+    func showError(message: String) {
+        showAlert(title: "Error", message: message)
+    }
+    
+    func showAlert(title: String, message: String) {
+        DispatchQueue.main.async {
+            // Implement the showAlert method as before
+        }
     }
 
     // MARK: - ClientDelegate Methods

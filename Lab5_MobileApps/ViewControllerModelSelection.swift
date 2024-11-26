@@ -14,7 +14,11 @@ class ViewControllerModelSelection: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        yourDSID = client.getDsid()
+        if UserDefaults.standard.value(forKey: "dsid") is Int {
+            yourDSID = UserDefaults.standard.value(forKey: "dsid") as! Int
+        } else {
+            client.updateDsid(1) // Set default DSID
+        }
         
 
         // Do any additional setup after loading the view.

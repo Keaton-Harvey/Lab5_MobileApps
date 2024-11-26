@@ -11,6 +11,9 @@ protocol ClientDelegate {
     func updateDsid(_ newDsid: Int)
     func receivedPrediction(_ prediction: [String: Any])
     func receivedTrainingAccuracies(_ accuracies: [String: Any])
+    func receivedDsids(_ dsids: [Int])
+    func dsidDeletionCompleted(success: Bool, dsid: Int)
+    func showError(message: String)
 }
 
 class MlaasModel: NSObject, URLSessionDelegate {
@@ -216,6 +219,8 @@ class MlaasModel: NSObject, URLSessionDelegate {
         getTask.resume()
     }
 
+   
+
     func accuraciesOfModels() {
         let baseURL = "http://\(server_ip):8000/train_models/\(dsid)"
         guard let getUrl = URL(string: baseURL) else { return }
@@ -255,6 +260,57 @@ class MlaasModel: NSObject, URLSessionDelegate {
         }
         getTask.resume()
     }
+    
+    
+    func getAllDsids() {
+        let baseURL = "http://\(server_ip):8000/dsids/"
+        guard let url = URL(string: baseURL) else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task: URLSessionDataTask = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error getting DSIDs: \(error.localizedDescription)")
+                self.delegate?.showError(message: "Error getting DSIDs: \(error.localizedDescription)")
+            } else if let data = data {
+                let jsonDictionary = self.convertDataToDictionary(with: data)
+                if let dsids = jsonDictionary["dsids"] as? [Int] {
+                    self.delegate?.receivedDsids(dsids)
+                } else {
+                    print("DSIDs not found in response")
+                    self.delegate?.showError(message: "DSIDs not found in server response.")
+                }
+            }
+        }
+        task.resume()
+        
+    }
+    
+    func deleteDsid(_ dsid: Int) {
+            let baseURL = "http://\(server_ip):8000/labeled_data/\(dsid)"
+            guard let deleteUrl = URL(string: baseURL) else { return }
+
+            var request = URLRequest(url: deleteUrl)
+            request.httpMethod = "DELETE"
+
+            let deleteTask: URLSessionDataTask = session.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Error deleting DSID: \(error.localizedDescription)")
+                    self.delegate?.dsidDeletionCompleted(success: false, dsid: dsid)
+                } else if let data = data {
+                    let jsonDictionary = self.convertDataToDictionary(with: data)
+                    if let numDeleted = jsonDictionary["num_deleted_results"] as? Int, numDeleted > 0 {
+                        self.delegate?.dsidDeletionCompleted(success: true, dsid: dsid)
+                    } else {
+                        self.delegate?.dsidDeletionCompleted(success: false, dsid: dsid)
+                    }
+                } else {
+                    self.delegate?.dsidDeletionCompleted(success: false, dsid: dsid)
+                }
+            }
+            deleteTask.resume()
+        }
 
 
     // MARK: - Utility Functions

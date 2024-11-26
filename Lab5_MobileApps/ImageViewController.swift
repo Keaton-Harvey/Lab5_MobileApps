@@ -8,8 +8,7 @@
 import UIKit
 
 class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ClientDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
-    
-    
+   
     
 
     // MARK: - Outlets
@@ -265,6 +264,18 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
     func updateDsid(_ newDsid: Int) {
         // Optional: Handle DSID updates if necessary
+    }
+    
+    func receivedDsids(_ dsids: [Int]) {
+        //does nothing
+    }
+    
+    func dsidDeletionCompleted(success: Bool, dsid: Int) {
+        //does nothing
+    }
+    
+    func showError(message: String) {
+        //does nothing
     }
 
     // MARK: - UIPickerViewDataSource
