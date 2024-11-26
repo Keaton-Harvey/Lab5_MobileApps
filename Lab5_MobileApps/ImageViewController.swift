@@ -8,6 +8,9 @@
 import UIKit
 
 class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ClientDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
+    
+    
+    
 
     // MARK: - Outlets
 
@@ -17,7 +20,7 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var digitPickerView: UIPickerView!
     @IBOutlet weak var uploadButton: UIButton!
     @IBOutlet weak var predictionLabel: UILabel!
-
+    @IBOutlet weak var labelImagePrompt: UILabel!
     // MARK: - Properties
 
     var capturedImage: UIImage?
@@ -27,8 +30,8 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
     let client = MlaasModel()
 
     // Picker view data
-    let digitOptions = Array(0...9)
-    var selectedDigit: Int = 0 // Default to 0
+    let digitOptions = Array(1...9)
+    var selectedDigit: Int = 1 // Default to 0
 
     // MARK: - View Lifecycle
 
@@ -72,11 +75,14 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
             digitPickerView.isHidden = false
             uploadButton.isHidden = false
             predictionLabel.isHidden = true
+            labelImagePrompt.isHidden = false
         } else {
             digitPickerView.isHidden = true
             uploadButton.isHidden = true
             predictionLabel.isHidden = false
             predictionLabel.text = "Prediction will appear here."
+            labelImagePrompt.isHidden = true
+    
         }
     }
 
@@ -279,5 +285,9 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedDigit = digitOptions[row]
+    }
+    
+    func receivedTrainingAccuracies(_ accuracies: [String : Any]) {
+        //doesn't do anything in here
     }
 }
