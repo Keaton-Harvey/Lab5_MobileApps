@@ -3,7 +3,7 @@
 //  HTTPSwiftExample
 //
 //  Created by Eric Cooper Larson on 6/5/24.
-//  Updated 2024
+//  Updated 2024 by Sam Skanse, Keaton Harvey
 
 import UIKit
 

@@ -2,7 +2,7 @@
 //  DSIDViewController.swift
 //  Lab5_MobileApps
 //
-//  Created by Sam Skanse on 11/25/24.
+//  MARK: Code written assisted with Chat GPT
 //
 
 import UIKit
@@ -18,7 +18,7 @@ class DSIDViewController: UIViewController, ClientDelegate {
 
     // MARK: - Properties
 
-    let client = MlaasModel()
+    var client = MlaasModel()
     var dsidArray: [Int] = []
 
     // MARK: - View Lifecycle
@@ -26,15 +26,9 @@ class DSIDViewController: UIViewController, ClientDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Ensure client is not nil
-//        if client == nil {
-//            fatalError("Client is nil. Make sure it is passed from the previous view controller.")
-//        }
-
         // Set up client delegate
         client.delegate = self
 
-        // Display current DSID
         if let savedDsid = UserDefaults.standard.value(forKey: "dsid") as? Int {
             client.updateDsid(savedDsid)
             currentDsidLabel.text = "Current DSID: \(savedDsid)"
@@ -43,7 +37,6 @@ class DSIDViewController: UIViewController, ClientDelegate {
             currentDsidLabel.text = "Current DSID: 1"
         }
 
-        // Fetch all DSIDs
         client.getAllDsids()
     }
 
@@ -66,6 +59,7 @@ class DSIDViewController: UIViewController, ClientDelegate {
 
         if dsidArray.contains(dsid) {
             updateDsid(dsid)
+            UserDefaults.standard.set(dsid, forKey: "dsid")
             showAlert(title: "Success", message: "DSID \(dsid) is now set as current.")
         } else {
             showAlert(title: "Error", message: "DSID \(dsid) does not exist.")
@@ -108,15 +102,6 @@ class DSIDViewController: UIViewController, ClientDelegate {
             }
         }
     }
-
-    func receivedPrediction(_ prediction: [String : Any]) {
-        // Not used in this view controller
-    }
-
-    func receivedTrainingAccuracies(_ accuracies: [String : Any]) {
-        // Not used in this view controller
-    }
-
     func showError(message: String) {
         showAlert(title: "Error", message: message)
     }
@@ -132,4 +117,15 @@ class DSIDViewController: UIViewController, ClientDelegate {
         alertController.addAction(alertAction)
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    //MARK: Nonused Protocol Methods
+    
+    func receivedPrediction(_ prediction: [String : Any]) {
+        // Not used here
+    }
+
+    func receivedTrainingAccuracies(_ accuracies: [String : Any]) {
+        // Not used here
+    }
+
 }

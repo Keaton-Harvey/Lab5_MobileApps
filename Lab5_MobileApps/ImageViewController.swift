@@ -2,7 +2,7 @@
 //  ImageViewController.swift
 //  Lab5_MobileApps
 //
-//  Created by Sam Skanse on 11/25/24.
+//  MARK: Code written assisted with Chat GPT
 //
 
 import UIKit
@@ -23,24 +23,21 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
     // MARK: - Properties
 
     var capturedImage: UIImage?
-    var currentMode: String = "Training" // or "Prediction"
+    var currentMode: String = "Training" // or mode "Prediction"
 
-    // Client for server communication
     let client = MlaasModel()
 
-    // Picker view data
+    // Picker view data 1 to 9 with default 1
     let digitOptions = Array(1...9)
-    var selectedDigit: Int = 1 // Default to 0
+    var selectedDigit: Int = 1
 
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Initial UI setup
+        // Initial setup
         updateUIForMode()
-
-        // Set up client delegate
         client.delegate = self
 
         // Retrieve DSID and server IP from UserDefaults
@@ -58,11 +55,9 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
             }
         }
 
-        // Set picker view data source and delegate
         digitPickerView.dataSource = self
         digitPickerView.delegate = self
 
-        // Set initial selected digit
         digitPickerView.selectRow(0, inComponent: 0, animated: false)
         selectedDigit = digitOptions[0]
     }
@@ -115,7 +110,6 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
             imagePicker.allowsEditing = false
             present(imagePicker, animated: true, completion: nil)
         } else {
-            // Show alert if camera is not available
             showAlert(title: "Error", message: "Camera not available.")
         }
     }
@@ -149,10 +143,10 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
         // Use the selected digit from the picker view
         let label = String(selectedDigit)
 
-        // Preprocess image to get pixel values
+        // Preprocess image
         guard let pixelValues = preprocessImage(image) else { return }
 
-        // Send data to server
+        // Send to server
         client.sendData(pixelValues, withLabel: label)
     }
 
@@ -162,7 +156,7 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
             return
         }
 
-        // Preprocess image to get pixel values
+        // Preprocess image
         guard let pixelValues = preprocessImage(image) else { return }
 
         // Send image to server for prediction
@@ -262,20 +256,25 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
 
+    // MARK: Nonused protocol methods
     func updateDsid(_ newDsid: Int) {
-        // Optional: Handle DSID updates if necessary
+        // does nothing here
     }
     
     func receivedDsids(_ dsids: [Int]) {
-        //does nothing
+        //does nothing here
     }
     
     func dsidDeletionCompleted(success: Bool, dsid: Int) {
-        //does nothing
+        //does nothing here
     }
     
     func showError(message: String) {
-        //does nothing
+        //does nothing here
+    }
+    
+    func receivedTrainingAccuracies(_ accuracies: [String : Any]) {
+        //doesn't do anything in here
     }
 
     // MARK: - UIPickerViewDataSource
@@ -298,7 +297,5 @@ class ImageViewController: UIViewController, UIImagePickerControllerDelegate, UI
         selectedDigit = digitOptions[row]
     }
     
-    func receivedTrainingAccuracies(_ accuracies: [String : Any]) {
-        //doesn't do anything in here
-    }
+   
 }
